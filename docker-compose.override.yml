@@ -1,0 +1,12 @@
+services:
+  appseed-app:
+    command: python manage.py runserver 0.0.0.0:8000   # hot reload
+    volumes:
+      - ./:/app                                        # sync โค้ดทั้งหมด
+      - ./db.sqlite3:/db.sqlite3
+    ports:
+      - "8000:8000"                                    # Django Dev Server
+
+  nginx:
+    ports:
+      - "5085:5085"

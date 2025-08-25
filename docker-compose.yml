@@ -1,0 +1,103 @@
+# version: "3.9"
+
+services:
+
+  # =========================
+  # Django Production
+  # =========================
+  appseed-app:
+    container_name: appseed-app
+    build: .
+    volumes:
+      - ./:/app     # mount project folder ทั้งหมด
+      - ./db.sqlite3:/db.sqlite3
+    networks:
+      - db_network
+      - web_network
+    profiles: ["prod"]
+    command: gunicorn --config gunicorn-cfg.py core.wsgi
+
+  # =========================
+  # Django Development (Hot Reload)
+  # =========================
+  appseed-dev:
+    container_name: appseed-dev
+    build: .
+    volumes:
+      - ./:/app                  # Hot reload HTML/CSS/JS/Python
+      - ./db.sqlite3:/db.
+    working_dir: /app          # ✅ เพิ่มบรรทัดนี้
+
+    ports:
+      - "8000:8000"
+    networks:
+      - db_network
+      - web_network
+    profiles: ["dev"]
+    environment:
+      - DEBUG=True
+    command: python manage.py runserver 0.0.0.0:8000
+
+  # =========================
+  # Redis ใช้ทั้ง Dev & Prod
+  # =========================
+  redis:
+    image: redis:7.0.12
+    container_name: redis
+    command: ["redis-server", "--port", "6379", "--slave-read-only", "no"]
+    ports:
+      - 6379:6379
+    networks:
+      - db_network
+
+  # =========================
+  # Celery Production
+  # =========================
+  celery:
+    container_name: celery
+    build: .
+    command: celery -A apps.tasks worker -l info -B
+    environment:
+      DJANGO_SETTINGS_MODULE: "core.settings"
+    networks:
+      - db_network
+    depends_on:
+      - appseed-app
+    profiles: ["prod"]
+
+  # =========================
+  # Celery Development
+  # =========================
+  celery-dev:
+    container_name: celery-dev
+    build: .
+    command: celery -A apps.tasks worker -l info -B
+    environment:
+      DJANGO_SETTINGS_MODULE: "core.settings"
+    networks:
+      - db_network
+    depends_on:
+      - appseed-dev
+    profiles: ["dev"]
+
+  # =========================
+  # Nginx Production
+  # =========================
+  nginx:
+    container_name: nginx
+    image: "nginx:latest"
+    ports:
+      - "5085:5085"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    networks:
+      - web_network
+    depends_on:
+      - appseed-app
+    profiles: ["prod"]
+
+networks:
+  db_network:
+    driver: bridge
+  web_network:
+    driver: bridge
