@@ -22,18 +22,11 @@
     <ul class="navbar-nav me-auto">
       <li><a href="#!" class="full-screen" onclick="javascript:toggleFullScreen()"><i
             class="feather icon-maximize"></i></a></li>
-      <li class="nav-item dropdown">
-        <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown">Dropdown</a>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#!">Action</a></li>
-          <li><a class="dropdown-item" href="#!">Another action</a></li>
-          <li><a class="dropdown-item" href="#!">Something else here</a></li>
-        </ul>
-      </li>
-      <li class="nav-item">
+ 
+      <li class="nav-item" style="display: none;">
         <div class="main-search">
           <div class="input-group">
-            <input type="text" id="m-search" class="form-control" placeholder="Search . . .">
+            <input type="text" id="m-search" class="form-control" >
             <a href="#!" class="input-group-append search-close">
               <i class="feather icon-x input-group-text"></i>
             </a>
@@ -73,7 +66,7 @@
         <a data-value="dark" data-bs-toggle="tooltip" href="{% url "change_mode" %}"><i class="icon feather icon-sun"></i></a>
       </li>
       
-      <li>
+      <!-- <li>
         <div class="dropdown">
           <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="icon feather icon-bell"></i></a>
           <div class="dropdown-menu dropdown-menu-end notification">
@@ -127,8 +120,8 @@
             </div>
           </div>
         </div>
-      </li>
-      <li><a href="#!" class="displayChatbox"><i class="icon feather icon-mail"></i></a></li>
+      </li> -->
+      <li><a href="#!" class="displayChatbox"><i class="icon feather icon-bell"></i></a></li>
       <li>
         <div class="dropdown drp-user">
           <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
